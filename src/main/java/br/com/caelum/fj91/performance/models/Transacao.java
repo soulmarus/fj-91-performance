@@ -1,5 +1,6 @@
 package br.com.caelum.fj91.performance.models;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -15,7 +16,12 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
-public class Transacao {
+public class Transacao implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8039074054241566274L;
 
 	@Id
 	@GeneratedValue
