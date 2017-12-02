@@ -4,21 +4,29 @@ import java.util.Iterator;
 
 import org.hibernate.ScrollableResults;
 
-public class ScrollableIterable<T> implements Iterator<T> {
 
+public class ScrollableIterable<T> implements Iterable<T> {
 	private ScrollableResults results;
-
+	
 	public ScrollableIterable(ScrollableResults results) {
-		super();
 		this.results = results;
 	}
+	
+	@Override
+	public Iterator<T> iterator() { return new ScrollableIterator<>(results);}
+	
+	private class ScrollableIterator<E> implements Iterator<E> {
 
-	public boolean hasNext() {
-		return results.next();
-	}
+		private ScrollableResults results;
 
-	public T next() {
-		return (T) results.get()[0];
+		public ScrollableIterator(ScrollableResults results) { this.results = results; }
+
+		@Override
+		public boolean hasNext() { return results.next(); }
+
+		@Override
+		public E next() { return (E) results.get()[0]; }
+
 	}
 
 }

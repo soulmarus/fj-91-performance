@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+  banco:
+    image: mysql
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - banco-de-dados:/var/lib/mysql
+    networks:
+      - fj91
+
+  app-a:
+    image: soulmarus/fj91-performance
+    environment:
+      - MYSQL_HOST=banco
+    networks:
+      - fj91  
+    depends_on:
+      - banco
+    restart: on-failure
+
+  app-b:
+    image: soulmarus/fj91-performance
+    environment:
+      - MYSQL_HOST=banco
+    networks:
+      - fj91  
+    depends_on:
+      - banco
+    restart: on-failure
+
+  proxy:
+    image: nginx:alpine
+    volumes:
+      - ./config/:/etc/nginx/conf.d/
+      - ./ssl/:/etc/nginx/ssl/      
+    networks:
+      - fj91
+    ports:
+      - "8080:80"    
+      - "8090:443"
+    depends_on:
+      - app-a
+      - app-b      
+    restart: on-failure      
+
+networks:
+  fj91:
+
+volumes:
+  banco-de-dados:
